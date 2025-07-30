@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel & Win a Prize!</title>
+    <style>
+        :root {
+            --primary-color: #006400; /* Dark Green */
+            --secondary-color: #008000; /* Green */
+            --glow-color: #32CD32; /* Lime Green */
+            --background-color: #013220; /* Darker Green */
+            --text-color: #ffffff;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-color), #024b30);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .azadi-header {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-shadow: 0 0 10px #fff, 0 0 20px var(--glow-color), 0 0 35px var(--glow-color);
+            margin-bottom: 15px;
+            animation: azadi-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes azadi-glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px var(--glow-color), 0 0 35px var(--glow-color);
+            }
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 40px var(--secondary-color), 0 0 50px var(--secondary-color);
+            }
+        }
+
+        h2.page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-shadow: 0 0 10px var(--glow-color);
+            margin-bottom: 10px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            margin: 30px auto; /* Added margin for spacing */
+        }
+        
+        #wheel {
+            width: 100%;
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        /* New Style for the center button */
+        #center-spin-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%; /* Adjust size as needed */
+            height: auto;
+            cursor: pointer;
+            z-index: 5; /* Ensure it's above the wheel but below the pointer */
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            transition: transform 0.2s ease;
+        }
+
+        #center-spin-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid var(--text-color);
+            z-index: 10;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 0 15px var(--glow-color);
+            transition: all 0.3s ease;
+            outline: none;
+            animation: pulse 2s infinite;
+            border: 2px solid var(--glow-color);
+        }
+        
+        /* Hide the old button */
+        #spin-btn {
+             display: none;
+        }
+
+
+        .btn:hover, .btn:focus {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--glow-color), 0 0 35px var(--secondary-color);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px var(--glow-color); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px var(--secondary-color); }
+            100% { transform: scale(1); box-shadow: 0 0 15px var(--glow-color); }
+        }
+        
+        .message-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        #post-win-container h3 {
+            color: var(--glow-color);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 8px var(--glow-color);
+        }
+
+        #post-win-container p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        #post-win-container input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--secondary-color);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        #post-win-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #whatsapp-share-btn {
+            background: #25D366;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        #whatsapp-share-btn:hover {
+            box-shadow: 0 0 25px #25D366;
+        }
+        
+        #claim-btn {
+             width: 80%;
+        }
+
+        #success-message h2 {
+            color: var(--glow-color);
+            font-size: 1.5rem;
+        }
+    </style>
+
+</head>
+<body>
+
+
+    <div class="container">
+
+
+<script type="text/javascript" src="//www.highperformanceformat.com/52fed1a2d2e7851f08f4e1c90023b420/invoke.js"></script>
+
+        <h5 class="azadi-header">جشنِ آزادی مبارک</h5>
+      
+        <div id="spin-section">
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <img id="wheel" src="spin.png" alt="Spin Wheel">
+                <!-- Added center button image here -->
+                <img id="center-spin-btn" src="button.png" alt="Spin Button">
+            </div>
+            <!-- This button is now hidden by CSS but its logic is used by the center image -->
+            <button id="spin-btn" class="btn">SPIN NOW</button>
+        </div>
+        
+        <div id="post-win-container" class="message-container hidden">
+            <h3 id="prize-won-heading"></h3>
+            <p>
+                To claim this prize, fill the form and share with 10 friends. <br>
+                اور 14 اگست کو گرینڈ لکی ڈرا میں شامل ہو جائیں۔
+            </p>
+            <input type="text" id="name" placeholder="اپنا نام لکھیں" required>
+            <input type="tel" id="mobile" placeholder="موبائل نمبر لکھیں" required>
+            
+            <button id="whatsapp-share-btn" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" style="margin-right: 10px;"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.902-.539-5.586-1.543L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.416-9.89-9.882-9.892-5.452 0-9.887 4.434-9.889 9.888-.001 2.225.651 4.315 1.731 6.086l.099.164-1.145 4.155 4.276-1.122.162.1z"/></svg>
+                Share on WhatsApp
+            </button>
+            <button id="claim-btn" class="btn">Claim Prize</button>
+        </div>
+        
+        <div id="success-message" class="message-container hidden">
+            <h2>Your prize claim has been submitted successfully!</h2>
+            <p>Congratulations again! You will be contacted soon.</p>
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const wheel = document.getElementById('wheel');
+            const spinBtn = document.getElementById('spin-btn');
+            const centerSpinBtn = document.getElementById('center-spin-btn'); // Get the new center button
+            const spinSection = document.getElementById('spin-section');
+            const postWinContainer = document.getElementById('post-win-container');
+            const prizeWonHeading = document.getElementById('prize-won-heading');
+            const whatsappShareBtn = document.getElementById('whatsapp-share-btn');
+            const claimBtn = document.getElementById('claim-btn');
+            const successMessage = document.getElementById('success-message');
+
+            const prizes = [
+                { name: 'RS1000 jazz Cash', angle: 0 }, { name: 'Honda 125', angle: 30 },
+                { name: 'iPhone 14', angle: 60 }, { name: 'Samsung TV', angle: 90 },
+                { name: 'Smartwatch', angle: 120 }, { name: 'Bluetooth Speaker', angle: 150 },
+                { name: 'AirPods', angle: 180 }, { name: '5000 Cash Voucher', angle: 240 },
+                { name: 'Free Coffee Coupon', angle: 270 }, { name: '20% Discount Daraz Voucher', angle: 300 },
+                { name: 'Surprise Gift Box', angle: 330 }
+            ];
+
+            let isSpinning = false;
+
+            // This function will handle the spinning logic
+            function spinTheWheel() {
+                if (isSpinning) return;
+                isSpinning = true;
+                spinBtn.disabled = true;
+                centerSpinBtn.style.pointerEvents = 'none'; // Disable click on center image during spin
+                
+                const randomIndex = Math.floor(Math.random() * prizes.length);
+                const winningPrize = prizes[randomIndex];
+                
+                const baseSpins = 5;
+                const finalRotation = (baseSpins * 360) + (360 - winningPrize.angle) + (Math.random() * 28 - 14);
+
+                wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+                setTimeout(() => {
+                    isSpinning = false;
+                    centerSpinBtn.style.pointerEvents = 'auto'; // Re-enable click
+                    
+                    confetti({
+                        particleCount: 200, spread: 100, origin: { y: 0.6 },
+                        colors: ['#FFFFFF', '#006400', '#32CD32']
+                    });
+
+                    prizeWonHeading.textContent = `Mubarak! Aap jeet gaye hain ${winningPrize.name}`;
+                    spinSection.classList.add('hidden');
+                    postWinContainer.classList.remove('hidden');
+
+                }, 5500);
+            }
+
+            // The original button calls the function
+            spinBtn.addEventListener('click', spinTheWheel);
+            
+            // The new center button image also calls the same function
+            centerSpinBtn.addEventListener('click', spinTheWheel);
+
+
+            whatsappShareBtn.addEventListener('click', () => {
+                const shareText = "I just won a real prize on this Spin & Win page! Try your luck too for the Grand Lucky Draw on 14th August!";
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+
+            claimBtn.addEventListener('click', () => {
+                const name = document.getElementById('name').value;
+                const mobile = document.getElementById('mobile').value;
+
+                if (name.trim() === '' || mobile.trim() === '') {
+                    alert('Please fill in all fields.');
+                    return;
+                }
+                
+                postWinContainer.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+            });
+        });
+    </script>
+
+</body>
+</html>
+<script type="text/javascript">
+	atOptions = {
+		'key' : '52fed1a2d2e7851f08f4e1c90023b420',
+		'format' : 'iframe',
+		'height' : 60,
+		'width' : 468,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/52fed1a2d2e7851f08f4e1c90023b420/invoke.js"></script>
