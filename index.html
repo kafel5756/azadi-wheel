@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ur">
 <head>
@@ -31,7 +32,7 @@
 
         .container {
             width: 100%;
-            max-width: 450px;
+            max-width: 470px;
             padding: 20px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 20px;
@@ -79,16 +80,15 @@
             transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
-        /* New Style for the center button */
         #center-spin-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 30%; /* Adjust size as needed */
+            width: 30%;
             height: auto;
             cursor: pointer;
-            z-index: 5; /* Ensure it's above the wheel but below the pointer */
+            z-index: 5;
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
             transition: transform 0.2s ease;
@@ -128,11 +128,9 @@
             border: 2px solid var(--glow-color);
         }
         
-        /* Hide the old button */
         #spin-btn {
              display: none;
         }
-
 
         .btn:hover, .btn:focus {
             transform: scale(1.05);
@@ -141,6 +139,15 @@
         
         .btn:active {
             transform: scale(0.95);
+        }
+        
+        /* --- نئی تبدیلی --- */
+        .btn:disabled {
+            background: linear-gradient(45deg, #555, #888);
+            cursor: not-allowed;
+            opacity: 0.6;
+            animation: none;
+            box-shadow: none;
         }
 
         @keyframes pulse {
@@ -187,6 +194,13 @@
         #post-win-container input::placeholder {
             color: rgba(255, 255, 255, 0.7);
         }
+        
+        #share-guidance {
+            color: #FFD700; /* Gold color for emphasis */
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 15px;
+        }
 
         #whatsapp-share-btn {
             background: #25D366;
@@ -203,6 +217,7 @@
         
         #claim-btn {
              width: 80%;
+             margin-top: 0; /* Adjusted margin */
         }
 
         #success-message h2 {
@@ -210,26 +225,19 @@
             font-size: 1.5rem;
         }
     </style>
-
 </head>
 <body>
-
-
-    <div class="container">
-
-
+<div class="container">
 <script type="text/javascript" src="//www.highperformanceformat.com/52fed1a2d2e7851f08f4e1c90023b420/invoke.js"></script>
-
+    
         <h5 class="azadi-header">جشنِ آزادی مبارک</h5>
       
         <div id="spin-section">
             <div class="wheel-container">
                 <div class="pointer"></div>
                 <img id="wheel" src="spin.png" alt="Spin Wheel">
-                <!-- Added center button image here -->
                 <img id="center-spin-btn" src="button.png" alt="Spin Button">
             </div>
-            <!-- This button is now hidden by CSS but its logic is used by the center image -->
             <button id="spin-btn" class="btn">SPIN NOW</button>
         </div>
         
@@ -246,29 +254,31 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" style="margin-right: 10px;"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.902-.539-5.586-1.543L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.416-9.89-9.882-9.892-5.452 0-9.887 4.434-9.889 9.888-.001 2.225.651 4.315 1.731 6.086l.099.164-1.145 4.155 4.276-1.122.162.1z"/></svg>
                 Share on WhatsApp
             </button>
+            <p id="share-guidance">انعام کلیم کرنے کیلئے پہلے واٹس ایپ پر شیئر کریں</p>
             <button id="claim-btn" class="btn">Claim Prize</button>
         </div>
         
         <div id="success-message" class="message-container hidden">
-            <h2>Your prize claim has been submitted successfully!</h2>
-            <p>Congratulations again! You will be contacted soon.</p>
+            <h2>آپ کے انعام کا دعویٰ کامیابی کے ساتھ جمع ہو گیا ہے!</h2>
+            <p>مبارک ہو! جلد ہی آپ سے رابطہ کیا جائے گا۔</p>
         </div>
-
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const wheel = document.getElementById('wheel');
-            const spinBtn = document.getElementById('spin-btn');
-            const centerSpinBtn = document.getElementById('center-spin-btn'); // Get the new center button
+            const centerSpinBtn = document.getElementById('center-spin-btn');
             const spinSection = document.getElementById('spin-section');
             const postWinContainer = document.getElementById('post-win-container');
             const prizeWonHeading = document.getElementById('prize-won-heading');
             const whatsappShareBtn = document.getElementById('whatsapp-share-btn');
             const claimBtn = document.getElementById('claim-btn');
             const successMessage = document.getElementById('success-message');
+            const nameInput = document.getElementById('name');
+            const mobileInput = document.getElementById('mobile');
+            const shareGuidance = document.getElementById('share-guidance');
+            let winningPrizeName = '';
 
             const prizes = [
                 { name: 'RS1000 jazz Cash', angle: 0 }, { name: 'Honda 125', angle: 30 },
@@ -281,15 +291,14 @@
 
             let isSpinning = false;
 
-            // This function will handle the spinning logic
             function spinTheWheel() {
                 if (isSpinning) return;
                 isSpinning = true;
-                spinBtn.disabled = true;
-                centerSpinBtn.style.pointerEvents = 'none'; // Disable click on center image during spin
+                centerSpinBtn.style.pointerEvents = 'none';
                 
                 const randomIndex = Math.floor(Math.random() * prizes.length);
                 const winningPrize = prizes[randomIndex];
+                winningPrizeName = winningPrize.name;
                 
                 const baseSpins = 5;
                 const finalRotation = (baseSpins * 360) + (360 - winningPrize.angle) + (Math.random() * 28 - 14);
@@ -298,39 +307,55 @@
 
                 setTimeout(() => {
                     isSpinning = false;
-                    centerSpinBtn.style.pointerEvents = 'auto'; // Re-enable click
+                    centerSpinBtn.style.pointerEvents = 'auto';
                     
                     confetti({
                         particleCount: 200, spread: 100, origin: { y: 0.6 },
                         colors: ['#FFFFFF', '#006400', '#32CD32']
                     });
 
-                    prizeWonHeading.textContent = `Mubarak! Aap jeet gaye hain ${winningPrize.name}`;
+                    prizeWonHeading.textContent = `مبارک! آپ جیت گئے ہیں ${winningPrize.name}`;
                     spinSection.classList.add('hidden');
                     postWinContainer.classList.remove('hidden');
+                    
+                    // --- تبدیلی: کلیم بٹن کو غیر فعال کریں ---
+                    claimBtn.disabled = true;
 
                 }, 5500);
             }
 
-            // The original button calls the function
-            spinBtn.addEventListener('click', spinTheWheel);
-            
-            // The new center button image also calls the same function
             centerSpinBtn.addEventListener('click', spinTheWheel);
 
-
+            // --- تبدیلی: واٹس ایپ شیئر بٹن کا نیا فنکشن ---
             whatsappShareBtn.addEventListener('click', () => {
-                const shareText = "I just won a real prize on this Spin & Win page! Try your luck too for the Grand Lucky Draw on 14th August!";
+                const userName = nameInput.value.trim();
+                const userMobile = mobileInput.value.trim();
+
+                if (userName === '' || userMobile === '') {
+                    alert('براہ کرم پہلے اپنا نام اور موبائل نمبر درج کریں۔');
+                    return;
+                }
+                
+                // IMPORTANT: اپنے GitHub Pages کا لنک یہاں تبدیل کریں
+                const appLink = "https://your-username.github.io/your-repo-name/"; 
+                const shareText = `*واہ!* ${userName} نے ابھی *${winningPrizeName}* جیتا ہے! \n\nآپ بھی جشنِ آزادی لکی ڈرا میں اپنی قسمت آزما سکتے ہیں اور شاندار انعامات جیت سکتے ہیں۔ \n\nیہاں وہیل گھمائیں: ${appLink}`;
                 const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
                 window.open(whatsappUrl, '_blank');
+                
+                // --- تبدیلی: کلیم بٹن کو فعال کریں ---
+                claimBtn.disabled = false;
+                shareGuidance.textContent = 'شکریہ! اب آپ اپنا انعام کلیم کر سکتے ہیں۔';
+                alert('اب آپ اپنا انعام کلیم کرنے کے لیے بٹن دبا سکتے ہیں۔');
             });
 
             claimBtn.addEventListener('click', () => {
-                const name = document.getElementById('name').value;
-                const mobile = document.getElementById('mobile').value;
+                // بٹن غیر فعال ہونے کی صورت میں کلک کام نہیں کرے گا
+                
+                const name = nameInput.value;
+                const mobile = mobileInput.value;
 
                 if (name.trim() === '' || mobile.trim() === '') {
-                    alert('Please fill in all fields.');
+                    alert('براہ کرم تمام خانے پُر کریں۔');
                     return;
                 }
                 
@@ -339,7 +364,6 @@
             });
         });
     </script>
-
 </body>
 </html>
 <script type="text/javascript">
@@ -352,3 +376,4 @@
 	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/52fed1a2d2e7851f08f4e1c90023b420/invoke.js"></script>
+    
